@@ -175,6 +175,7 @@ main_enc.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b
 main_enc.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/qei.h
 main_enc.obj: ../project_includes/Board.h
 main_enc.obj: ../project_includes/EK_TM4C123GXL.h
+main_enc.obj: ../project_includes/enc.h
 
 ../main_enc.c: 
 C:/ti/xdctools_3_32_00_06_core/packages/xdc/std.h: 
@@ -351,3 +352,4 @@ C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/sys
 C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/qei.h: 
 ../project_includes/Board.h: 
 ../project_includes/EK_TM4C123GXL.h: 
+../project_includes/enc.h: 

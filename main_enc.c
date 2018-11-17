@@ -31,95 +31,42 @@
 /* Board Header file */
 #include "project_includes/Board.h"
 
-uint32_t pos;
+/* project includes */
+#include "project_includes/enc.h"
 
 void heartBeat_TASK(void)
 {
-    /* pin config */
-    //
-    // Enable Peripheral Clocks
-    //
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-
-    //
-    // Configure the GPIO Pin Mux for PD6
-    // for PHA0
-    //
-    MAP_GPIOPinConfigure(GPIO_PD6_PHA0);
-    MAP_GPIOPinTypeQEI(GPIO_PORTD_BASE, GPIO_PIN_6);
-
-    //
-    // Unlock the Port Pin and Set the Commit Bit
-    //
-    HWREG(GPIO_PORTD_BASE+GPIO_O_LOCK) = GPIO_LOCK_KEY;
-    HWREG(GPIO_PORTD_BASE+GPIO_O_CR) |= GPIO_PIN_7;
-    HWREG(GPIO_PORTD_BASE+GPIO_O_LOCK) = 0x0;
-
-    //
-    // Configure the GPIO Pin Mux for PD7
-    // for PHB0
-    //
-    MAP_GPIOPinConfigure(GPIO_PD7_PHB0);
-    MAP_GPIOPinTypeQEI(GPIO_PORTD_BASE, GPIO_PIN_7);
-
-    //
-    // Configure the GPIO Pin Mux for PC5
-    // for PHA1
-    //
-    MAP_GPIOPinConfigure(GPIO_PC5_PHA1);
-    MAP_GPIOPinTypeQEI(GPIO_PORTC_BASE, GPIO_PIN_5);
-
-    //
-    // Configure the GPIO Pin Mux for PC6
-    // for PHB1
-    //
-    MAP_GPIOPinConfigure(GPIO_PC6_PHB1);
-    MAP_GPIOPinTypeQEI(GPIO_PORTC_BASE, GPIO_PIN_6);
-
-    /* qei config */
-
-    //
-    // Enable the QEI0 peripheral
-    //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_QEI0);
-    //
-    // Wait for the QEI0 module to be ready.
-    //
-    while (!SysCtlPeripheralReady(SYSCTL_PERIPH_QEI0))
-    {
-    }
-    //
-    // Configure the quadrature encoder to capture edges on both signals and
-    // maintain an absolute position by resetting on index pulses. Using a
-    // 1000 line encoder at four edges per line, there are 4000 pulses per
-    // revolution; therefore set the maximum position to 3999 as the count
-    // is zero based.
-    //
-    QEIConfigure(QEI0_BASE, (QEI_CONFIG_CAPTURE_A_B |
-    QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP),
-                 129);
-
-    //
-    // Enable the quadrature encoder.
-    //
-    QEIEnable(QEI0_BASE);
-
-    QEIVelocityConfigure(QEI0_BASE, QEI_VELDIV_1, 1000);
-
-    QEIVelocityEnable(QEI0_BASE);
 
     while (1)
     {
         Task_sleep(100);
         GPIO_toggle(Board_LED0);
-        //
-        // Read the encoder position.
-        //
-        pos = QEIPositionGet(QEI0_BASE);
     }
 }
 
+uint32_t enc0_pos, enc1_pos;
+float enc0_vel, enc1_vel;
+void speedLoop_TASK(void)
+{
+
+    // initialize encoder modules
+    encInit();
+    while(1)
+    {
+        // encoder 0 data
+        enc0_pos = encGetPosition(ENC_CHANNEL_0);
+        enc0_vel = encGetVelocity(ENC_CHANNEL_0);
+
+        //encoder 1 data
+        enc1_pos = encGetPosition(ENC_CHANNEL_1);
+        enc1_vel = encGetVelocity(ENC_CHANNEL_1);
+
+        // sleep for some time
+        Task_sleep(100);
+    }
+
+
+}
 /*
  *  ======== main ========
  */
